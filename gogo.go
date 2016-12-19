@@ -22,6 +22,14 @@ var ROW_DEF = [3][3]rune {
    {'\u2514','\u2534','\u2518'},
 }
 
+type Profile struct {
+     black_stone rune
+     white_stone rune
+     black_last rune
+     white_last rune
+}
+
+
 type Goban struct {
      size int
      board [][]rune
@@ -97,6 +105,17 @@ func main() {
    var row byte
 
 
+   var profile_green_on_black = &Profile{
+      '\u25CB',
+      '\u25CF',
+      '\u25CE',
+      '\u25C9'}
+
+   //For black characters on a white background, reverse the profile
+
+   profile := profile_green_on_black
+
+
    scanner := bufio.NewScanner(dat)
    for scanner.Scan() {
       text := scanner.Text()
@@ -118,17 +137,17 @@ func main() {
         col = col_letter - 'a'
         row = row_letter - 'a'
         if color == 'B' {
-           goban.board[row][col] = '\u25CB'
+           goban.board[row][col] = profile.black_stone
         } else if color == 'W'{
-           goban.board[row][col] = '\u25CF'
+           goban.board[row][col] = profile.white_stone
         }
       }
    }
    //Tag the last stone placed
    if color == 'B' {
-       goban.board[row][col] = '\u25CE'
+       goban.board[row][col] = profile.black_last
    } else if color == 'W'{
-       goban.board[row][col] = '\u25C9'
+       goban.board[row][col] = profile.white_last
    }
 
 
