@@ -42,7 +42,7 @@ func NewGoban(size int)*Goban{
 func draw_row(goban *Goban, row int){
   var row_def int
   if row == 0{
-    row_def = TOP   
+    row_def = TOP
   } else if row == goban.size - 1{
     row_def = BOTTOM
   } else {
@@ -61,7 +61,7 @@ func draw_row(goban *Goban, row int){
 func clear(goban *Goban){
    for x := 0 ; x < goban.size; x++{
       draw_row(goban, x)
-   }         
+   }
 }
 
 func display(goban *Goban){
@@ -85,13 +85,17 @@ func display(goban *Goban){
 
 func main() {
 
-   dat, err := os.Open("sample.sgf")
+   dat, err := os.Open("sample2.sgf")
    if err != nil {
      panic(err)
    }
 
    var goban *Goban
    var size int
+   var color byte
+   var col byte
+   var row byte
+
 
    scanner := bufio.NewScanner(dat)
    for scanner.Scan() {
@@ -100,7 +104,7 @@ func main() {
       if strings.HasPrefix(text, "SZ"){
         pieces := strings.Split(text, "]")
         pieces = strings.Split(pieces[0], "[")
-  
+
         sz, err := strconv.ParseInt(pieces[1],10, 32)
         if err != nil {
           panic(err)
@@ -108,17 +112,25 @@ func main() {
         size = int(sz)
         goban = NewGoban(size)
       } else if strings.HasPrefix(text, ";"){
-        color := text[1]
-        row_letter := text[3]
-        col_letter := text[4]
-        col := col_letter - 'a'
-        row := row_letter - 'a'
+        color = text[1]
+        col_letter := text[3]
+        row_letter := text[4]
+        col = col_letter - 'a'
+        row = row_letter - 'a'
         if color == 'B' {
-           goban.board[row][col] = '\u25CF'
+           goban.board[row][col] = '\u25CB'
         } else if color == 'W'{
-           goban.board[row][col] = '\u25CB'        
+           goban.board[row][col] = '\u25CF'
         }
       }
    }
+   //Tag the last stone placed
+   if color == 'B' {
+       goban.board[row][col] = '\u25CE'
+   } else if color == 'W'{
+       goban.board[row][col] = '\u25C9'
+   }
+
+
    display(goban)
 }
